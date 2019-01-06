@@ -45,7 +45,26 @@ FusionEKF::FusionEKF() {
 */
 FusionEKF::~FusionEKF() {}
 
-void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
+void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) 
+{
+  if(measurement_pack.sensor_type_ == MeasurementPackage::LASER)
+  {
+    cout << "meas_pack L: " << measurement_pack.raw_measurements_(0) << " " 
+                            << measurement_pack.raw_measurements_(1) << " "
+                            << measurement_pack.timestamp_
+                            << endl;
+  }
+  else if(measurement_pack.sensor_type_ == MeasurementPackage::RADAR)
+  {
+    cout << "meas_pack R: " << measurement_pack.raw_measurements_(0) << " " 
+                            << measurement_pack.raw_measurements_(1) << " "
+                            << measurement_pack.raw_measurements_(2) << " "
+                            << measurement_pack.timestamp_
+                            << endl;
+  }
+
+  return;
+  
 
 
   /*****************************************************************************
@@ -67,11 +86,15 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
+      cout << "RADAR data " << endl;
+      //call ekf_.init()
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
       Initialize state.
       */
+     cout << "LASER data " << endl;
+     //call ekf_.init()
     }
 
     // done initializing, no need to predict or update
