@@ -67,13 +67,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
-      cout << "FusionEKF: initial the Radar with first measurement" << endl;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
       Initialize state.
       */
-      cout << "FusionEKF: initial the Laser with first measurement" << endl;
     }
 
     // done initializing, no need to predict or update

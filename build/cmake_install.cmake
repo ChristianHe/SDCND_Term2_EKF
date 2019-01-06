@@ -1,4 +1,4 @@
-# Install script for directory: /home/christian/SDC/CarND-Extended-Kalman-Filter-Project-master
+# Install script for directory: /home/christian/SDC/SDCND_Term2_EKF
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/christian/SDC/CarND-Extended-Kalman-Filter-Project-master/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/christian/SDC/SDCND_Term2_EKF/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -38,18 +38,6 @@ int main()
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
 
-  // chris: 
-  // for all the lines:
-  //   read one line data from file obj_pose-laser-radar-synthetic-input.txt
-  //   pack the message according to the type L or R
-  //   pack the gt and push into ground_truth vector
-  //   call fusionEKF.ProcessMeasurement for KF
-  //   push the fusionEKF.ekf_.x_ into the estimation vector
-  //   calculate the RMSE
-  cout << "hello, EKF" << endl;
-
-
-#if 0
   h.onMessage([&fusionEKF,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -102,7 +90,7 @@ int main()
           		iss >> timestamp;
           		meas_package.timestamp_ = timestamp;
           }
-        float x_gt;
+          float x_gt;
     	  float y_gt;
     	  float vx_gt;
     	  float vy_gt;
@@ -158,7 +146,7 @@ int main()
     }
 
   });
-#endif
+
   // We don't need this since we're not using HTTP but if it's removed the program
   // doesn't compile :-(
   h.onHttpRequest([](uWS::HttpResponse *res, uWS::HttpRequest req, char *data, size_t, size_t) {
