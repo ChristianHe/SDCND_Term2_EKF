@@ -116,3 +116,12 @@ and how to install it.
 
 Regardless of the IDE used, every submitted project must
 still be compilable with cmake and make.
+
+
+
+1, Visualize the data first to get a landscape of the dataset.
+2, Split the data into laser and radar.
+3, Basic Kalman filter first with laser data.
+4, Extend Kalman filter then with radar data.
+3, Kalman filter is really fast.
+4, How to improve? motion model?
