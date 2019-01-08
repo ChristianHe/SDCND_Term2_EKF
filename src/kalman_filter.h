@@ -23,6 +23,15 @@ public:
   // measurement covariance matrix
   Eigen::MatrixXd R_;
 
+  // extended measurement matrix
+  Eigen::MatrixXd EH_;
+
+  // extended measurement covariance matrix
+  Eigen::MatrixXd ER_;
+
+  // previous state vector
+  Eigen::VectorXd pre_x_;
+
   /**
    * Constructor
    */
@@ -42,8 +51,10 @@ public:
    * @param R_in Measurement covariance matrix
    * @param Q_in Process covariance matrix
    */
-  void Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
-      Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in, Eigen::MatrixXd &Q_in);
+  void Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, 
+            Eigen::MatrixXd &F_in, Eigen::MatrixXd &Q_in,
+            Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in,
+            Eigen::MatrixXd &EH_in, Eigen::MatrixXd &ER_in);
 
   /**
    * Prediction Predicts the state and the state covariance

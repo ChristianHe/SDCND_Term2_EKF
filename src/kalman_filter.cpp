@@ -1,5 +1,9 @@
+#include <iostream>
+#include <math.h>
 #include "kalman_filter.h"
+#include "tools.h"
 
+using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -7,14 +11,19 @@ KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
 
-void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in) {
+void KalmanFilter::Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, 
+                        Eigen::MatrixXd &F_in, Eigen::MatrixXd &Q_in,
+                        Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in,
+                        Eigen::MatrixXd &EH_in, Eigen::MatrixXd &ER_in){
   x_ = x_in;
   P_ = P_in;
   F_ = F_in;
+  Q_ = Q_in;
   H_ = H_in;
   R_ = R_in;
-  Q_ = Q_in;
+  EH_ = EH_in;
+  ER_ = ER_in;
+  pre_x_ = x_;
 }
 
 void KalmanFilter::Predict() {
@@ -43,6 +52,9 @@ void KalmanFilter::Update(const VectorXd &z) {
   // new state
   x_ = x_ + (K_ * y_);
   P_ = (I - K_ * H_) * P_;
+
+  //preserve the x_
+//  pre_x_ = x_;
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -50,4 +62,53 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   TODO:
     * update the state by using Extended Kalman Filter equations
   */
+  Tools tools;
+ #if 1
+  //calculate hx with hu and jacobians
+  VectorXd u_ = pre_x_;
+  float u_px = u_(0);
+  float u_py = u_(1);
+  float u_vx = u_(2);
+  float u_vy = u_(3);
+
+  // pre-compute a set of terms to avoid repeated calculation
+  float c1 = u_px*u_px+u_py*u_py;
+  float c2 = sqrt(c1);
+
+  // check division by zero
+  if (fabs(c1) < 0.0001) {
+    cout << "UKF - Error - Division by Zero" << endl;
+    return;
+  }
+
+  // calculate hu
+  float hu1 = c2;
+  float hu2 = atan(u_py/u_px);
+  float hu3 = (u_px*u_vx+u_py*u_vy)/c2;
+
+  //cout << "hu2: " << hu2 << endl;
+
+  VectorXd hu_ = VectorXd(3, 1);
+  hu_ << hu1, 
+         hu2,
+         hu3;
+
+  EH_ = tools.CalculateJacobian(x_);
+  VectorXd hx_ = hu_ + EH_ * (x_ - u_); 
+#endif
+
+  VectorXd y_ = z - hx_;
+  MatrixXd EHt_ = EH_.transpose();
+  MatrixXd S_ = EH_ * P_ * EHt_ + ER_;
+  MatrixXd Si_ = S_.inverse();
+  MatrixXd K_ =  P_ * EHt_ * Si_;
+  MatrixXd I;
+  I = MatrixXd::Identity(4, 4);
+
+  // new state
+  x_ = x_ + (K_ * y_);
+  P_ = (I - K_ * EH_) * P_;  
+  
+  //preserve the x_
+  pre_x_ = x_;
 }

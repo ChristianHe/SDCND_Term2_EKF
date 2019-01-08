@@ -49,8 +49,8 @@ int main()
   //   calculate the RMSE
   string sensor_measurment;
   //ifstream DataFile("../data/obj_pose-laser-radar-synthetic-input.txt");
-  //ifstream DataFile("../data/radar10.txt");
-  ifstream DataFile("../data/laser.txt");
+  ifstream DataFile("../data/radar30.txt");
+  //ifstream DataFile("../data/laser.txt");
 
   if (DataFile.is_open())
   {
@@ -126,8 +126,8 @@ int main()
       estimate(2) = v1;
       estimate(3) = v2;
       
-      estimations.push_back(estimate);
-
+      estimations.push_back(estimate); 
+ 
       VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
 
       //Expected RMSE: 0.11 0.11 0.52 0.52

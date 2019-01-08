@@ -114,7 +114,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
       float vx = 0;
       float vy = 0;
       x_in << px, py, vx, vy; 
-      cout << "initial px py: " << px << py << endl;
+      //cout << "initial px py: " << px << py << endl;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
@@ -129,7 +129,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
       x_in << px, py, vx, vy; 
     }   
     
-    ekf_.Init(x_in, P_in, F_in, H_laser_, R_laser_, Q_in);
+    ekf_.Init(x_in, P_in, F_in, Q_in, H_laser_, R_laser_, Hj_, R_radar_);
 
     // record the timestamp for next time useage.
     previous_timestamp_ = measurement_pack.timestamp_;
