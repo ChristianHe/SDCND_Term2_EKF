@@ -1,5 +1,6 @@
 #ifndef KALMAN_FILTER_H_
 #define KALMAN_FILTER_H_
+#include <fstream>
 #include "Eigen/Dense"
 
 class KalmanFilter {
@@ -31,6 +32,9 @@ public:
 
   // previous state vector
   Eigen::VectorXd pre_x_;
+
+  // log file
+  ofstream LogFile;
 
   /**
    * Constructor

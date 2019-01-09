@@ -24,6 +24,8 @@ void KalmanFilter::Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in,
   EH_ = EH_in;
   ER_ = ER_in;
   pre_x_ = x_;
+
+  LogFile.open("../log.txt");
 }
 
 void KalmanFilter::Predict() {
@@ -54,7 +56,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   P_ = (I - K_ * H_) * P_;
 
   //preserve the x_
-//  pre_x_ = x_;
+  pre_x_ = x_;
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -83,10 +85,20 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   // calculate hu
   float hu1 = c2;
-  float hu2 = atan(u_py/u_px);
+  float hu2 = atan2(u_py, u_px);
   float hu3 = (u_px*u_vx+u_py*u_vy)/c2;
+  
+  //when cross from -pi to pi, add 2*pi
+  if(hu2 < 0 && z(1) > 0)
+  {
+    hu2 += 2 * 3.1415;
+  }
 
-  //cout << "hu2: " << hu2 << endl;
+  //when cross from pi to -pi, sub 2*pi
+  if(hu2 > 0 && z(1) < 0)
+  {
+    hu2 -= 2 * 3.1415;
+  }
 
   VectorXd hu_ = VectorXd(3, 1);
   hu_ << hu1, 
@@ -105,6 +117,9 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   MatrixXd I;
   I = MatrixXd::Identity(4, 4);
 
+  LogFile << "y1: " << y_(1) << " z1: " << z(1) << " hx1: " << hx_(1) << " hu2: " << hu2 << 
+  " u_px: " << u_px << " u_py: " << u_py << " px: " << x_(0) << " py: " << x_(1) << endl;
+  
   // new state
   x_ = x_ + (K_ * y_);
   P_ = (I - K_ * EH_) * P_;  
