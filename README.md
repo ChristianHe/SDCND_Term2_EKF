@@ -117,11 +117,16 @@ and how to install it.
 Regardless of the IDE used, every submitted project must
 still be compilable with cmake and make.
 
-
-
-1, Visualize the data first to get a landscape of the dataset.
-2, Split the data into laser and radar.
-3, Basic Kalman filter first with laser data.
-4, Extend Kalman filter then with radar data.
-3, Kalman filter is really fast.
-4, How to improve? motion model?
+## What I have done and lessons learned
+0. KF is a Bayesian estimator with predict and update recursively. Linear Gaussian model is the fundemental hypothesis. 
+1. Visualize the data first to get a landscape of the dataset is helpful.
+2. Split the data into laser and radar to deal with individually.
+3. Basic Kalman filter first with laser data.
+4. Extend Kalman filter then with radar data.
+5. Kalman filter is really fast.
+6. Laser is quite accurate regarding the px and py, while radar is also 
+not too bad and much cheaper.
+7. Linearlize the hx with the nearest u.
+8. Take account of the theta coming across from 2nd quadrant to 3rd quadrant or vice versa.
+9. Watch out the dividing 0!
+10. How to improve? motion model?
