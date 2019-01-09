@@ -130,10 +130,10 @@ int main()
  
       VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
 
-      //Expected RMSE: 0.11 0.11 0.52 0.52
-      //only laser: 0.12 0.09 0.64 0.45
-      //only radar: 0.19 0.28 0.56 0.67
-      //RMSE: 0.10 0.09 0.45 0.47
+      //Expect RMSE: 0.11 0.11 0.52 0.52
+      // laser RMSE: 0.12 0.09 0.64 0.45
+      // radar RMSE: 0.19 0.28 0.56 0.67
+      //  both RMSE: 0.10 0.09 0.45 0.47
       cout << "RMSE: " << RMSE << endl;
 
     }

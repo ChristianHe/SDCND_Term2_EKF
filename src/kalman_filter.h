@@ -34,7 +34,7 @@ public:
   Eigen::VectorXd pre_x_;
 
   // log file
-  ofstream LogFile;
+  std::ofstream LogFile;
 
   /**
    * Constructor
@@ -54,6 +54,8 @@ public:
    * @param H_in Measurement matrix
    * @param R_in Measurement covariance matrix
    * @param Q_in Process covariance matrix
+   * @param EH_in extended jacobian measurement matrix
+   * @param ER_in extended measurement covariance matrix
    */
   void Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, 
             Eigen::MatrixXd &F_in, Eigen::MatrixXd &Q_in,

@@ -25,7 +25,7 @@ void KalmanFilter::Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in,
   ER_ = ER_in;
   pre_x_ = x_;
 
-  LogFile.open("../log.txt");
+  //LogFile.open("../log.txt");
 }
 
 void KalmanFilter::Predict() {
@@ -55,7 +55,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   x_ = x_ + (K_ * y_);
   P_ = (I - K_ * H_) * P_;
 
-  //preserve the x_
+  //preserve the x_ for talor expansion.
   pre_x_ = x_;
 }
 
@@ -65,14 +65,17 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     * update the state by using Extended Kalman Filter equations
   */
   Tools tools;
- #if 1
-  //calculate hx with hu and jacobians
+ 
+  //calculate hx with hx = hu + Hjacobians * (x - u)
+  //set u equal to the previous state x.
   VectorXd u_ = pre_x_;
   float u_px = u_(0);
   float u_py = u_(1);
   float u_vx = u_(2);
   float u_vy = u_(3);
 
+  //calculate the hu
+  VectorXd hu_ = VectorXd(3, 1);
   // pre-compute a set of terms to avoid repeated calculation
   float c1 = u_px*u_px+u_py*u_py;
   float c2 = sqrt(c1);
@@ -83,7 +86,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     return;
   }
 
-  // calculate hu
   float hu1 = c2;
   float hu2 = atan2(u_py, u_px);
   float hu3 = (u_px*u_vx+u_py*u_vy)/c2;
@@ -100,15 +102,14 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     hu2 -= 2 * 3.1415;
   }
 
-  VectorXd hu_ = VectorXd(3, 1);
   hu_ << hu1, 
          hu2,
          hu3;
 
+  //calculate the Hjacobians.
   EH_ = tools.CalculateJacobian(x_);
-  VectorXd hx_ = hu_ + EH_ * (x_ - u_); 
-#endif
 
+  VectorXd hx_ = hu_ + EH_ * (x_ - u_); 
   VectorXd y_ = z - hx_;
   MatrixXd EHt_ = EH_.transpose();
   MatrixXd S_ = EH_ * P_ * EHt_ + ER_;
@@ -117,8 +118,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   MatrixXd I;
   I = MatrixXd::Identity(4, 4);
 
-  LogFile << "y1: " << y_(1) << " z1: " << z(1) << " hx1: " << hx_(1) << " hu2: " << hu2 << 
-  " u_px: " << u_px << " u_py: " << u_py << " px: " << x_(0) << " py: " << x_(1) << endl;
+  /*LogFile << "y1: " << y_(1) << " z1: " << z(1) << " hx1: " << hx_(1) << " hu2: " << hu2 << 
+  " u_px: " << u_px << " u_py: " << u_py << " px: " << x_(0) << " py: " << x_(1) << endl;*/
   
   // new state
   x_ = x_ + (K_ * y_);
